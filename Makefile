@@ -4,12 +4,10 @@
 DOCKER        = docker
 DOCKER_COMP   = docker-compose
 
-# Executables
+# Executables (PHP container)
 EXEC_PHP_CONT = $(DOCKER_COMP) exec php
 COMPOSER      = $(EXEC_PHP_CONT) composer
 PHP           = $(EXEC_PHP_CONT) php
-
-# Alias
 SYMFONY       = $(PHP) bin/console
 
 # Misc
@@ -38,8 +36,9 @@ php: ## Call the PHP executable of the php Docker container
 	$(PHP) $(a)
 
 ## —— Composer 🧙‍♂️ ————————————————————————————————————————————————————————————
-composer: ## Call composer
+composer: ## Composer shortcut
 	# to pass arguments to the target just do for exemple: make composer a=show | grep console
+	$(eval a ?= 'list')
 	$(COMPOSER) $(a)
 
 install: composer.lock ## Install vendors according to the current composer.lock file
@@ -48,6 +47,7 @@ install: composer.lock ## Install vendors according to the current composer.lock
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 sf: ## Call the symfony command
 	# to pass arguments to the target just do for example: make sf a="debug:container parameter_bag"
+	$(eval a ?= 'list')
 	$(SYMFONY) $(a)
 
 cc: ## Clear the cache. DID YOU CLEAR YOUR CACHE????
@@ -60,12 +60,6 @@ assets: purge ## Install the assets with symlinks in the public folder
 	$(SYMFONY) assets:install public/ --symlink --relative
 
 ## —— Project 🐝 ———————————————————————————————————————————————————————————————
-start: up ## Start docker
+start: up ## Starts the project
 
-stop: down ## Stop docker
-
-fix-perms: ## Fix permissions of all var files
-	$(EXEC_PHP_CONT) chmod -R 777 var/*
-
-purge: ## Purge cache and logs
-	$(EXEC_PHP_CONT) rm -rf var/cache/* var/logs/*
+stop: down ## Stops the project
