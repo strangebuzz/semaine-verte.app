@@ -10,6 +10,7 @@ services:
       # - ./var:/srv/app/var:rw
     environment:
       APP_ENV: dev
+      APP_SECRET: 0
 
   caddy:
     volumes:
